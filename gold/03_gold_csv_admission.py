@@ -14,11 +14,16 @@
 
 # COMMAND ----------
 
+dbutils.widgets.text("catalog", "healthcare_dev", "Catalog")
+catalog = dbutils.widgets.get("catalog")
+
+# COMMAND ----------
+
 from pyspark.sql import functions as F
 
-silver_valid_table = "healthcare_dev.silver.csv_admission_valid"
-gold_admissions_table = "healthcare_dev.gold.csv_admissions"
-gold_metrics_table = "healthcare_dev.gold.csv_admission_metrics"
+silver_valid_table = f"{catalog}.silver.csv_admission_valid"
+gold_admissions_table = f"{catalog}.gold.csv_admissions"
+gold_metrics_table = f"{catalog}.gold.csv_admission_metrics"
 
 # COMMAND ----------
 

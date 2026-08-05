@@ -8,11 +8,16 @@
 
 # COMMAND ----------
 
+dbutils.widgets.text("catalog", "healthcare_dev", "Catalog")
+catalog = dbutils.widgets.get("catalog")
+
+# COMMAND ----------
+
 #gittest test dev to main
 from pyspark.sql import functions as F
 from functools import reduce
 
-config_table = "healthcare_dev.control.tenant_config"
+config_table = f"{catalog}.control.tenant_config"
 
 # ------------------------------------------------------------
 # 1. Read active tenant configuration for the CSV admission source
@@ -193,7 +198,7 @@ display(
 # 5. Write to bronze
 # ------------------------------------------------------------
 
-bronze_table = "healthcare_dev.bronze.csv_admission_raw"
+bronze_table = f"{catalog}.bronze.csv_admission_raw"
 
 (
     bronze_df.write
