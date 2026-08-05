@@ -8,6 +8,11 @@
 
 # COMMAND ----------
 
+dbutils.widgets.text("catalog", "healthcare_dev", "Catalog")
+catalog = dbutils.widgets.get("catalog")
+
+# COMMAND ----------
+
 from pyspark.sql import functions as F
 from pyspark.sql.window import Window
 from pyspark.sql.types import (
@@ -19,9 +24,9 @@ from pyspark.sql.types import (
     IntegerType
 )
 
-bronze_table = "healthcare_dev.bronze.csv_admission_raw"
-silver_valid_table = "healthcare_dev.silver.csv_admission_valid"
-silver_quarantine_table = "healthcare_dev.silver.csv_admission_quarantine"
+bronze_table = f"{catalog}.bronze.csv_admission_raw"
+silver_valid_table = f"{catalog}.silver.csv_admission_valid"
+silver_quarantine_table = f"{catalog}.silver.csv_admission_quarantine"
 
 # COMMAND ----------
 
@@ -385,7 +390,7 @@ display(
 from pyspark.sql import functions as F
 
 display(
-    spark.table("healthcare_dev.silver.csv_admission_quarantine")
+    spark.table(silver_quarantine_table)
     .withColumn("error", F.explode(F.split(F.col("validation_error"), "; ")))
     .groupBy("error")
     .count()
