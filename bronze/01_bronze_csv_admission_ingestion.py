@@ -8,6 +8,10 @@
 
 # COMMAND ----------
 
+#validating dev to prod deployment
+
+# COMMAND ----------
+
 dbutils.widgets.text("catalog", "healthcare_dev", "Catalog")
 catalog = dbutils.widgets.get("catalog")
 

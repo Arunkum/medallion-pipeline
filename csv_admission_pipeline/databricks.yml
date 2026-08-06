@@ -1,0 +1,36 @@
+# Declarative Automation Bundle configuration, more info here: https://docs.databricks.com/en/dev-tools/bundles/settings.html
+bundle:
+  name: "csv_admission_pipeline"
+
+include:
+  - resources/*.yml
+  - resources/*/*.yml
+
+targets:
+  dev:
+    mode: development
+    default: true
+    workspace:
+      host: https://adb-7405610809264033.13.azuredatabricks.net
+    resources:
+      jobs:
+        CSV_Admission_pipeline:
+          parameters:
+            - name: catalog
+              default: healthcare_uat
+      
+
+  # The 'prod' target, used for production deployment.
+  prod:
+    mode: production
+    workspace:
+      host: https://adb-7405610809264033.13.azuredatabricks.net
+      root_path: /Users/sangeethapr19@gmail.com/.bundle/${bundle.name}/${bundle.target}
+    run_as:
+      user_name: sangeethapr19@gmail.com
+    resources:
+      jobs:
+        CSV_Admission_pipeline:
+          parameters:
+            - name: catalog
+              default: healthcare_dev

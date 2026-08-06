@@ -1,0 +1,45 @@
+resources:
+  jobs:
+    CSV_Admission_pipeline:
+      name: CSV_Admission_pipeline
+      queue:
+        enabled: true
+
+      parameters:
+        - name: catalog
+          default: healthcare_dev
+
+      tasks:
+        - task_key: bronze_ingestion
+          notebook_task:
+            notebook_path: ../../bronze/01_bronze_csv_admission_ingestion.py
+            base_parameters:
+              catalog: "{{job.parameters.catalog}}"
+
+        - task_key: silver_transformation
+          depends_on:
+            - task_key: bronze_ingestion
+          notebook_task:
+            notebook_path: ../../silver/02_silver_csv_admission.py
+            base_parameters:
+              catalog: "{{job.parameters.catalog}}"
+
+        - task_key: gold_publish
+          depends_on:
+            - task_key: silver_transformation
+          notebook_task:
+            notebook_path: ../../gold/03_gold_csv_admission.py
+            base_parameters:
+              catalog: "{{job.parameters.catalog}}"
+
+        - task_key: apply_phi_masking
+          depends_on:
+            - task_key: gold_publish
+          notebook_task:
+            notebook_path: ../../gold/04_gold_masking_setup.ipynb
+            base_parameters:
+              catalog: "{{job.parameters.catalog}}"
+
+      email_notifications:
+        on_failure:
+          - sangeethapr19@gmail.com
